@@ -95,7 +95,7 @@ module lab7part3
 			
 		fsm fsm0(.clk(CLOCK_50),
 					.reset_n(resetn),
-					.drawing_floors_finish(drawing_floors_finish),
+					.draw_floors_finish(drawing_floors_finish),
 					.erase_finish(erase_finish),
 					.frameCounter(frameCounter),
 					.drawing_floors(drawing_floors),
@@ -114,10 +114,10 @@ module lab7part3
 					.drawing_floors(drawing_floors),
 					.draw_man(draw_man),
 					.erase(erase),
-					.x_in(x_in),
-					.y_in(y_in),
+					.x_in(8'd40),
+					.y_in(7'd108),
 
-					.drawing_floors_finish(drawing_floors_finish),
+					.draw_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
 					.erase_finish(erase_finish),
 					.color(colour),
@@ -134,7 +134,7 @@ module lab7part3
 		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .counter(frameCounter));
 		
 		
-		movement m0(.clk(CLOCK_50), .operation(3'b000), .reset(resetn), .update(update), .yout(y_in));
+		//movement m0(.clk(CLOCK_50), .operation(3'b000), .reset(resetn), .update(update), .yout(y_in));
 endmodule
 
 
