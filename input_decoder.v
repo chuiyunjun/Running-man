@@ -51,7 +51,7 @@ module input_decoder(clk, reset, inputkeys, movement);
     end
 
     always @(*)
-    begin: enable_singals
+    begin: enable_signals
         movement = 3'b000;
         start = 1'b0;
         case (current_state)
