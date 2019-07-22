@@ -1,0 +1,4 @@
+
+State Machine - |lab7part3|fsm:fsm0|current_state
+Name 
+current_state.S_DRAWING_FLOORS 
