@@ -77,122 +77,50 @@ module lab7part3
 			
 	// Put your code here. Your code should produce signals x,y,colour and writeEn/plot
 	// for the VGA controller, in addition to any other functionality your design may require.
-    wire drawing_floors;
+    wire drawing_floors_finish,
+			erase_finish,
+			drawing_floors,
+			erase,
+			ld_x,
+			ld_y,
+			ld_man_style,
+			reset_frame_counter,
+			normal1crouch0;
+			
+			
 		fsm fsm0(.clk(CLOCK_50),
 					.reset_n(resetn),
+					.drawing_floors_finish(drawing_floors_finish),
+					.erase_finish(erase_finish),
+					.frameCounter(frameCounter),
 					.drawing_floors(drawing_floors),
+					.erase(erase),
+					.ld_x(ld_x),
+					.ld_y(ld_y),
+					.ld_man_style(ld_man_style),
+					.reset_frame_counter(reset_frame_counter),
 					.writeEn(writeEn)
 					);
 					
 		datapath d0(.clk(CLOCK_50),
 					.reset_n(resetn),
 					.drawing_floors(drawing_floors),
+					.draw_man(draw_man),
+					.erase(erase),
+					.x_original(x_original),
+					.y_original(y_original),
+					.normal1crouch0(normal1crouch0),
+					.drawing_floors_finish(drawing_floors_finish),
+					.draw_man_finish(draw_man_finish),
+					.erase_finish(erase_finish),
 					.color(colour),
 					.x(x),
 					.y(y));
 endmodule
 
 
-module fsm(
-	input clk, reset_n,
-	input draw_floors_finish, erase_finish,
-	input reg [3:0] frameCounter,
 
-	output reg drawing_floors,
-	output reg erase,
-	output reg writeEn);
-	
-	localparam  S_DRAWING_FLOORS = 5'd0,
-					S_LOAD_MAN= 5'd1,
-				   S_DRAWING_MAN = 5'd2,
-					S_WAIT = 5'd3,
-					S_RESET_FRAME_COUNTER = 5'd4,
-					S_ERASE = 5'd5
-					S_UPDATE_MAN_X_Y = 5'd6;
-	
-	
-	
-	reg [3:0] current_state;
-	
-	always @(*)
-	//state table
-	begin: state_table
-		case(current_state)
-			S_DRAWING_FLOORS: next_state = draw_floors_finish? S_LOAD_MAN: S_DRAWING_FLOORS ;
-			S_LOAD_MAN: next_state = S_DRAWING_MAN;
-			S_DRAWING_MAN: next_state = drawing_man_finish? S_WAIT : S_DRAWING_MAN;
-			S_WAIT: next_state = (frameCounter == 4'b1110) ? S_ERASE : S_RESET_FRAME_COUNTER;
-			S_RESET_FRAME_COUNTER: next_state = S_ERASE;
-			S_ERASE: next_state = (erase_finish)? S_UPDATE_MAN_X_Y : S_ERASE;
-			S_UPDATE_MAN_X_Y: next_state = S_LOAD_MAN;
-			default next_state = S_DRAWING_FLOORS;
-		endcase
-	end
-	
-	always @(*)
-	begin: enable_signals
-		drawing_floors = 1'b0;
-		writeEn = 1'b0;
-		case(current_state)
-			S_DRAWING_FLOORS: begin drawing_floors = 1'b1; writeEn = 1'b1; end
-			S_LOAD_MAN: 
-				begin
-					ld_x = 1;
-					ld_y = 1;
-					ld_man_style = 1;
-				end
-			S_DRAWING_MAN:
-			S_RESET_FRAME_COUNTER:
-			S_ERASE:
-			S_UPDATE_MAN_X_Y:
-		endcase
-	end
 
-    always @(posedge clk)
-    begin: state_FFs
-        if(!reset_n)
-            current_state <= S_DRAWING_FLOORS;
-        else
-            current_state <= next_state;
-    end 
-endmodule
-
-module datapath(input clk,	reset_n, drawing_floors,
-						output reg draw_floors_finish,
-
-						output reg [2:0] color,
-						output reg [7:0] x,
-						output reg [6:0] y);
-						
-				always @(posedge clk)
-				begin
-					if(!reset_n)
-						begin
-							x <= 8'd0;
-							y <= 7'd35;
-						end
-					else if(drawing_floors)
-						begin
-							color = 3'b101;
-							if(x == 8'd159)
-								begin
-									x <= 0;
-									if(y >= 7'd35 && y <= 7'd38 || y >= 7'd75 && y <= 7'd78 || y >= 7'd115 && y <= 7'd118)
-										begin y <= y + 1; end 
-									else if (y == 7'd39 || y == 7'd79)
-										begin y <= y + 40; end
-									else if (y == 7'd119)
-										begin draw_floors_finish = 1; end
-								end
-							else
-								begin
-									x <= x + 1;
-									draw_floors_finish = 0;
-								end
-						end
-				end
-						
-endmodule
 
 /*
 module fsm_part3(
