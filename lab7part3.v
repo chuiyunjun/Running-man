@@ -46,13 +46,14 @@ module lab7part3
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
-	wire [2:0] move; // movement determined by user inputs
-	input_decoder INPUT(
-		.clk(CLOCK_50),
-		.reset(resetn),
-		.inputkeys(~KEY[3:1]),
-		.movement(move)
-	);
+	//wire [2:0] move; // movement determined by user inputs
+
+	//input_decoder INPUT(
+	//	.clk(CLOCK_50),
+	//	.reset(resetn),
+	//	.inputkeys(~KEY[3:1]),
+	//	.movement(move)
+	//);
 
 	vga_adapter VGA(
 			.resetn(resetn),
@@ -80,6 +81,7 @@ module lab7part3
     wire drawing_floors_finish,
 			erase_finish,
 			drawing_floors,
+			draw_man,
 			erase,
 			ld_x,
 			ld_y,
@@ -103,6 +105,7 @@ module lab7part3
 					.ld_man_style(ld_man_style),
 					.reset_frame_counter(reset_frame_counter),
 					.update(update),
+					.draw_man(draw_man),
 					.writeEn(writeEn)
 					);
 					
@@ -113,20 +116,25 @@ module lab7part3
 					.erase(erase),
 					.x_in(x_in),
 					.y_in(y_in),
-					.normal1crouch0(normal1crouch0),
+
 					.drawing_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
 					.erase_finish(erase_finish),
 					.color(colour),
 					.x(x),
-					.y(y));
+					.y(y),
+					.ld_x(ld_x),
+					.ld_y(ld_y),
+					.ld_man_style(ld_man_style),
+					.man_style(1'b1)
+					);
 					
       wire newClock, frameCounter;
 		delay_counter dc0(.reset_n(resetn), .clock(CLOCK_50), .new_clock(newClock));
 		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .counter(frameCounter));
 		
 		
-		movement m0(.clk(CLOCK_50), .operation(move), .reset(resetn), .update(update), .yout(y_in));
+		movement m0(.clk(CLOCK_50), .operation(3'b000), .reset(resetn), .update(update), .yout(y_in));
 endmodule
 
 

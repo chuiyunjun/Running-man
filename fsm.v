@@ -1,7 +1,7 @@
 module fsm(
 	input clk, reset_n,
-	input draw_floors_finish, erase_finish,
-	input reg [3:0] frameCounter,
+	input draw_floors_finish, erase_finish, drawing_man_finish,
+	input [3:0] frameCounter,
 
 	output  reg drawing_floors,
 	output reg erase,
@@ -9,6 +9,7 @@ module fsm(
 	output reg ld_y,
 	output reg ld_man_style,
 	output reg update,
+	output reg draw_man,
 	output reg reset_frame_counter,
 	output reg writeEn);
 	
@@ -17,13 +18,13 @@ module fsm(
 				   S_DRAWING_MAN = 5'd2,
 					S_WAIT = 5'd3,
 					S_RESET_FRAME_COUNTER = 5'd4,
-					S_ERASE = 5'd5
+					S_ERASE = 5'd5,
 					S_UPDATE_MAN_X_Y = 5'd6;
 	
 	
 	
-	reg [3:0] current_state;
-	
+	reg [3:0] current_state, next_state;
+
 	always @(*)
 	//state table
 	begin: state_table

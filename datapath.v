@@ -1,4 +1,4 @@
-module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in, normal1crouch0,
+module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in, ld_x, ld_y, ld_man_style, man_style,
 						output reg draw_floors_finish,
 						output reg draw_man_finish,
 						output reg erase_finish,
@@ -7,7 +7,8 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 						output reg [6:0] y);
 				
 				reg [7:0] x_original;
-				reg [6:0] y_orignial;
+				reg [6:0] y_original;
+				reg normal1crouch0;
 				always @(posedge clk, negedge reset_n)
 				 begin
 					if(!reset_n) 
@@ -20,42 +21,82 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 							if(ld_x)
 								x_original <= x_in;
 							if(ld_y)
-								y_origianl <= y_in;
+								y_original <= y_in;
+							if(ld_man_style)
+								normal1crouch0 <= man_style;
 					end
 				end
 						
+						
+				reg [7:0] ground_x;
+				reg [6:0] ground_y;
 				always @(posedge clk)
 				begin
 					if(!reset_n)
 						begin
-							x <= 8'd0;
-							y <= 7'd35;
+							erase_finish <= 0;
+							q <= 0;
+						end
+
+					if(q == 6'd25)
+						begin
+							q <= 0;
+							if(draw_man)
+								begin
+									draw_man_finish <= 1;
+									erase_finish <= 0;
+									draw_floors_finish <= 0;
+								end
+							else if(erase)
+								begin
+									erase_finish <= 1;
+									draw_man_finish <= 0;
+								end
+						end
+					else
+						begin
+							q <= q + 1;
+						end
+					
+					if(!reset_n)
+						begin
+							ground_x <= 8'd0;
+							ground_y <= 7'd35;
+							draw_floors_finish <= 0;
 						end
 					else if(drawing_floors)
 						begin
-							color = 3'b101;
-							if(x == 8'd159)
+
+							if(ground_x == 8'd159)
 								begin
-									x <= 0;
-									if(y >= 7'd35 && y <= 7'd38 || y >= 7'd75 && y <= 7'd78 || y >= 7'd115 && y <= 7'd118)
-										begin y <= y + 1; end 
-									else if (y == 7'd39 || y == 7'd79)
-										begin y <= y + 40; end
-									else if (y == 7'd119)
+									ground_x <= 0;
+									if(ground_y >= 7'd35 && ground_y <= 7'd38 || ground_y >= 7'd75 && ground_y <= 7'd78 || ground_y >= 7'd115 && ground_y <= 7'd118)
+										begin ground_y <= ground_y + 1; end 
+									else if (ground_y == 7'd39 || ground_y == 7'd79)
+										begin ground_y <= ground_y + 40; end
+									else if (ground_y == 7'd119)
 										begin draw_floors_finish <= 1; end
 								end
 							else
 								begin
-									x <= x + 1;
+									ground_x <= ground_x + 1;
 								end
 						end
 				end
 
 				always @(*)
 				begin
-					 if(draw_man || erase)
-						color = draw_man ? 3'b111:3'b000;
+					if(!reset_n || drawing_floors)
+							begin
+								x = ground_x;
+								y = ground_y;
+								color = 3'b101;
+							end
+
+					 else if(draw_man || erase)
 						begin
+							color = draw_man ? 3'b111:3'b000;
+						
 							if(normal1crouch0)
 							begin
 									if(q == 6'd0) begin
@@ -236,34 +277,6 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 				end
 				
 				reg [5:0] q;
-				always @(clk)
-				begin
-					if(!resetn)
-						begin
-							draw_man_finish <= 0;
-							erase_finish <= 0;
-							q <= 0;
-						end
 
-					if(q == 6'd25)
-						begin
-							q <= 0;
-							if(draw_man)
-								begin
-									draw_man_finish <= 1;
-									erase_finish <= 0;
-									draw_floors_finish <= 0;
-								end
-							else if(erase)
-								begin
-									erase_finish <= 1;
-									draw_man_finish <= 0;
-								end
-						end
-					else
-						begin
-							q <= q + 1;
-						end
-				end
 						
 endmodule
