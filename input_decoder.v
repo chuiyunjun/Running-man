@@ -17,9 +17,11 @@ module input_decoder(clk, reset, inputkeys, movement);
 
     localparam WAIT            = 3'd0,
                JUMP_WAIT       = 3'd1,
-               CALC_JUMP       = 3'd2,
-               CROUCH          = 3'd3,
-               DROP            = 3'd4;
+               JUMP_SYNC       = 3'd2,
+               CALC_JUMP       = 3'd3,
+               CROUCH          = 3'd4,
+               DROP_WAIT       = 3'd5,
+               DROP            = 3'd6;
 
     always @(*)
     begin: state_table
@@ -35,12 +37,14 @@ module input_decoder(clk, reset, inputkeys, movement);
                           end
                       else if (inputkeys == 3'b100) // drop
                          begin
-                             next_state = DROP;
+                             next_state = DROP_WAIT;
                          end
                   end
-            JUMP_WAIT: next_state = (inputkeys[0] == 1'b1) ? JUMP_WAIT : CALC_JUMP;
+            JUMP_WAIT: next_state = (inputkeys[0] == 1'b1) ? JUMP_WAIT : JUMP_SYNC;
+            JUMP_SYNC: next_state = CALC_JUMP;
             CALC_JUMP: next_state = WAIT; 
-            CROUCH: next_state = WAIT;
+            CROUCH: next_state = (inputkeys[1] == 1'b1) ? CROUCH : WAIT;
+            DROP_WAIT: next_state = (inputkeys[2] == 1'b0) ? DROP : DROP_WAIT;
             DROP: next_state = WAIT;
             default: next_state = WAIT;
         endcase
@@ -58,9 +62,9 @@ module input_decoder(clk, reset, inputkeys, movement);
         endcase
     end
 
-    always @(posedge clk)
+    always @(posedge clk, negedge reset)
     begin: state_FFs
-        if(reset)
+        if(~reset)
             begin
                 current_state <= WAIT;
                 start <= 1'b0;
@@ -78,17 +82,17 @@ module timer(clk, reset, enable, bigorsmall);
     input reset;
     output reg bigorsmall;
     reg [30:0] timer; 
-    always @(posedge clk)
+    always @(posedge clk, negedge reset)
     begin 
-        if (reset)
+        if (~reset)
             timer <= 30'd0;
         if (enable == 1'b0)
             begin
-                if (timer > 30'd4)// certain number
+                if (timer > 30'd10000000)// certain number
                     begin
                         bigorsmall <= 1'b1;
                     end
-                else if (timer <= 30'd4)
+                else if (timer <= 30'd9999999)
                     begin
                         bigorsmall <= 1'b0;
                     end
