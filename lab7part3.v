@@ -86,8 +86,9 @@ module lab7part3
 			ld_man_style,
 			reset_frame_counter,
 			normal1crouch0,
-			x_in
-			y_in;
+			x_in,
+			y_in,
+			update;
 			
 			
 		fsm fsm0(.clk(CLOCK_50),
@@ -101,6 +102,7 @@ module lab7part3
 					.ld_y(ld_y),
 					.ld_man_style(ld_man_style),
 					.reset_frame_counter(reset_frame_counter),
+					.update(update),
 					.writeEn(writeEn)
 					);
 					
@@ -118,7 +120,54 @@ module lab7part3
 					.color(colour),
 					.x(x),
 					.y(y));
+					
+      wire newClock, frameCounter;
+		delay_counter dc0(.reset_n(resetn), .clock(CLOCK_50), .new_clock(newClock));
+		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .counter(frameCounter));
+		
+		
+		movement m0(.clk(CLOCK_50), .operation(move), .reset(resetn), .update(update), .yout(y_in));
 endmodule
+
+
+module delay_counter(clock, reset_n, new_clock);
+	input clock, reset_n;
+	wire [19:0] divider;
+	reg [19:0] q;
+	output new_clock;
+	
+	assign divider = 20'd833333;
+	//assign divider = 25'h2;
+	always @(posedge clock, negedge reset_n)
+	begin
+		if(reset_n == 1'b0)
+			q <= divider - 1'b1;
+		else
+		begin
+			if(q == 20'h0)
+				q <= divider - 1'b1;
+			else
+				q <= q - 1'b1;
+		end
+	end
+	assign new_clock = (q == 20'd0) ? 1'b1 : 1'b0;
+	
+endmodule
+
+
+module frame_counter(
+	input clock, reset_n,
+	output reg [3:0] counter);
+	
+	always @(posedge clock, negedge reset_n) begin
+		if(reset_n == 1'b0)
+			counter <= 1'b0;
+		else
+			counter <= counter + 1'b1;
+	end
+endmodule
+
+
 
 
 

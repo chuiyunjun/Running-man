@@ -8,6 +8,7 @@ module fsm(
 	output reg ld_x,
 	output reg ld_y,
 	output reg ld_man_style,
+	output reg update,
 	output reg reset_frame_counter,
 	output reg writeEn);
 	
@@ -49,6 +50,7 @@ module fsm(
 		draw_man = 0;
 		reset_frame_counter = 1;
 		erase = 0;
+		update = 0;
 		
 		case(current_state)
 			S_DRAWING_FLOORS: begin drawing_floors = 1'b1; writeEn = 1'b1; end
@@ -73,7 +75,9 @@ module fsm(
 					writeEn = 1;
 				end
 			S_UPDATE_MAN_X_Y:
-				
+				begin
+					update = 1;
+				end
 		endcase
 	end
 
