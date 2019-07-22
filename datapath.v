@@ -1,4 +1,4 @@
-module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_original, y_original, normal1crouch0,
+module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in, normal1crouch0,
 						output reg draw_floors_finish,
 						output reg draw_man_finish,
 						output reg erase_finish,
@@ -6,8 +6,23 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_original,
 						output reg [7:0] x,
 						output reg [6:0] y);
 				
-				
-				
+				reg [7:0] x_original;
+				reg [6:0] y_orignial;
+				always @(posedge clk, negedge reset_n)
+				 begin
+					if(!reset_n) 
+						begin
+							x_original <= 8'd30;
+							y_original <= 7'd108;
+						end
+					else 
+						begin
+							if(ld_x)
+								x_original <= x_in;
+							if(ld_y)
+								y_origianl <= y_in;
+					end
+				end
 						
 				always @(posedge clk)
 				begin
@@ -34,7 +49,11 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_original,
 									x <= x + 1;
 								end
 						end
-					else if(draw_man || erase)
+				end
+
+				always @(*)
+				begin
+					 if(draw_man || erase)
 						color = draw_man ? 3'b111:3'b000;
 						begin
 							if(normal1crouch0)

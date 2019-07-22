@@ -85,7 +85,9 @@ module lab7part3
 			ld_y,
 			ld_man_style,
 			reset_frame_counter,
-			normal1crouch0;
+			normal1crouch0,
+			x_in
+			y_in;
 			
 			
 		fsm fsm0(.clk(CLOCK_50),
@@ -107,8 +109,8 @@ module lab7part3
 					.drawing_floors(drawing_floors),
 					.draw_man(draw_man),
 					.erase(erase),
-					.x_original(x_original),
-					.y_original(y_original),
+					.x_in(x_in),
+					.y_in(y_in),
 					.normal1crouch0(normal1crouch0),
 					.drawing_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
