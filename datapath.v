@@ -37,74 +37,75 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_original,
 					else if(draw_man || erase)
 						color = draw_man ? 3'b111:3'b000;
 						begin
+							if(normal1crouch0)
 							begin
 									if(q == 6'd0) begin
 										x = x_original + 2'd3;
 										y = y_original;
 									end	
 									else if (q == 6'd1) begin
-										x = x_original + 3'd4;
+										x = x_original + 3'd2;
 										y = y_original;
 									end
 									else if(q == 6'd2) begin
-										x = x_original + 3'd5;
-										y = y_original;
+										x = x_original + 3'd2;
+										y = y_original + 3'd1;
 									end
 									else if(q == 6'd3) begin
 										x = x_original + 2'd3;
 										y = y_original + 1'b1;
 									end	
 									else if(q == 6'd4) begin
-										x = x_original + 3'd5;
-										y = y_original + 1'd1;
+										x = x_original;
+										y = y_original + 2'd2;
 									end
 									else if(q == 6'd5) begin
-										x = x_original + 2'd3;
+										x = x_original + 1'd1;
 										y = y_original + 2'd2;
 									end	
 									else if(q == 6'd6) begin
-										x = x_original + 3'd4;
+										x = x_original + 3'd2;
 										y = y_original + 2'd2;
 									end	
 									else if(q == 6'd7) begin
-										x = x_original + 3'd5;
+										x = x_original + 3'd3;
 										y = y_original + 2'd2;
 									end
 									else if(q == 6'd8) begin
-										x = x_original;
-										y = y_original + 3'd3;
+										x = x_original + 3'd4;
+										y = y_original + 3'd2;
 									end
 									else if(q == 6'd9) begin
-										x = x_original + 1'd1;
-										y = y_original + 3'd3;
+										x = x_original + 3'd5;
+										y = y_original + 3'd2;
 									end
 									else if(q == 6'd10) begin
-										x = x_original + 2'd2;
+										x = x_original;
 										y = y_original + 3'd3;
 									end
 									else if(q == 6'd11) begin
-										x = x_original + 2'd3;
+										x = x_original + 2'd2;
 										y = y_original + 3'd3;
 									end
 									else if(q == 6'd12) begin
-										x = x_original;
-										y = y_original + 3'd4;
+										x = x_original + 2'd3;
+										y = y_original + 3'd3;
 									end
 									else if(q == 6'd13) begin
-										x = x_original + 1'd1;
+										x = x_original + 1'd2;
 										y = y_original + 3'd4;
 									end
 									else if(q == 6'd14) begin
-										x = x_original + 2'd2;
+										x = x_original + 2'd3;
 										y = y_original + 3'd4;
 									end
 									else if(q == 6'd15) begin
-										x = x_original + 2'd3;
+										x = x_original + 2'd4;
 										y = y_original + 3'd4;
 									end	
 									else if(q == 6'd16) begin
-										x = x_original;
-										y = y_original + 3'd5;
+										x = x_original + 2'd5;
+										y = y_original + 3'd4;
 									end
 									else if(q == 6'd17) begin
 										x = x_original + 1'd1;
@@ -115,35 +116,102 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_original,
 										y = y_original + 3'd5;
 									end
 									else if(q == 6'd19) begin
-										x = x_original + 3'd3;
+										x = x_original + 3'd4;
 										y = y_original + 3'd5;
 									end
 									else if(q == 6'd20) begin
-										x = x_original;
-										y = y_original + 3'd6;
+										x = x_original + 3'd5;
+										y = y_original + 3'd5;
 									end	
 									else if(q == 6'd21) begin
-										x = x_original + 3'd3;
+										x = x_original + 3'd1;
 										y = y_original + 3'd6;
 									end
 									else if(q == 6'd22) begin
-										x = x_original - 1'd1;
-										y = y_original + 2'd3;
+										x = x_original + 3'd4;
+										y = y_original + 3'd6;
 									end
 									else if(q == 6'd23) begin
-										x = x_original - 2'd2;
-										y = y_original + 2'd3;
+										x = x_original + 3'd6;
+										y = y_original + 3'd2;
 									end
 									else if(q == 6'd24) begin
-										x = x_original + 2'd3;
-										y = y_original - 1'd1;
+										x = x_original + 3'd6;
+										y = y_original + 3'd4;
 									end
 									else if(q == 6'd25) begin
-										x = x_original + 3'd5;
-										y = y_original - 1'd1;
+										x = x_original + 3'd3;
+										y = y_original + 3'd2;
 
 									end
 
+								end
+							else
+								begin
+									if(q == 6'd0) begin
+										x = x_original + 3'd4;
+										y = y_original + 3'd3;
+									end	
+									else if (q == 6'd1) begin
+										x = x_original + 3'd5;
+										y = y_original + 3'd3;
+									end
+									else if(q == 6'd2) begin
+										x = x_original + 3'd6;
+										y = y_original + 3'd3;
+									end
+									else if(q == 6'd3) begin
+										x = x_original + 3'd1;
+										y = y_original + 3'd4;
+									end	
+									else if(q == 6'd4) begin
+										x = x_original + 3'd2;
+										y = y_original + 3'd4;
+									end
+									else if(q == 6'd5) begin
+										x = x_original + 3'd3;
+										y = y_original + 3'd4;
+									end	
+									else if(q == 6'd6) begin
+										x = x_original + 3'd4;
+										y = y_original + 3'd4;
+									end	
+									else if(q == 6'd7) begin
+										x = x_original + 3'd6;
+										y = y_original + 3'd4;
+									end
+									else if(q == 6'd8) begin
+										x = x_original + 3'd1;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd9) begin
+										x = x_original + 3'd2;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd10) begin
+										x = x_original + 3'd3;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd11) begin
+										x = x_original + 3'd4;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd12) begin
+										x = x_original + 3'd5;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd13) begin
+										x = x_original + 3'd6;
+										y = y_original + 3'd5;
+									end
+									else if(q == 6'd14) begin
+										x = x_original + 3'd1;
+										y = y_original + 3'd6;
+									end
+									else if(q == 6'd15) begin
+										x = x_original + 3'd4;
+										y = y_original + 3'd6;
+									end	
 								end
 						end
 				end
