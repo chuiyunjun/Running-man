@@ -46,6 +46,14 @@ module lab7part3
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
+	wire [2:0] move; // movement determined by user inputs
+	input_decoder INPUT(
+		.clk(CLOCK_50),
+		.reset(resetn),
+		.inputkeys(~KEY[3:1]),
+		.movement(move)
+	);
+
 	vga_adapter VGA(
 			.resetn(resetn),
 			.clock(CLOCK_50),
@@ -90,7 +98,7 @@ module fsm(
 	input draw_floors_finish, erase_finish,
 	input reg [3:0] frameCounter,
 
-	output  reg drawing_floors,
+	output reg drawing_floors,
 	output reg erase,
 	output reg writeEn);
 	
