@@ -6,8 +6,8 @@ add wave {/*}
 
 force {clk} 0 0, 1 1 -r 2
 force {reset_n} 1
-force {x_in} 2#00001111
-force {y_in} 2#0000111
+force {x_original} 2#00001111
+force {y_original} 2#0000111
 force {color_in} 2#011
 
 force {ld_x} 0 0, 1 10, 0 12

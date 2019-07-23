@@ -68,7 +68,7 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
 				DROP7         = 6'd33,
 				DROP8         = 6'd34;
 
-	always @(posedge update, operation)
+	always @(posedge update, posedge operation)
     begin: state_table
         case (current_state)
              WAIT: begin
@@ -123,9 +123,9 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
         endcase
     end
 
-    always @(posedge update, operation)
+    always @(posedge update, posedge operation, negedge reset)
     begin: enable_signals
-        yout = 7'd12;
+		yout = 7'd108;
         case (current_state)
             BIG_JUMP0    : yout = yin + 9;
 			BIG_JUMP1    : yout = yin + 8;
@@ -163,15 +163,13 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
 			DROP8        : yout = yin - 4;
             WAIT         : yout = yin;
         endcase
-    end
+		 end
 
     always @(posedge clk, negedge reset)
     begin: state_FFs
         if(~reset)
             begin
-                yout <= 7'd12;
                 current_state <= WAIT;
-                next_state <= WAIT;
             end
         else
             begin
@@ -191,7 +189,7 @@ module yregister(yin, update, clk, reset, yout);
     begin: state_FFs
         if(~reset)
             begin
-                yout <= 7'd12;
+                yout <= 7'd108;
             end
         else
             begin

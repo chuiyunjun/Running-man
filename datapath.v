@@ -1,4 +1,14 @@
-module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in, ld_x, ld_y, ld_man_style, man_style,
+module datapath(input clk,	
+					input reset_n, 
+					input drawing_floors, 
+					input draw_man, 
+					input erase, 
+					input [7:0] x_in,
+					input [6:0] y_in,
+					input ld_x, 
+					input ld_y, 
+					input ld_man_style, 
+					input man_style,
 						output reg draw_floors_finish,
 						output reg draw_man_finish,
 						output reg erase_finish,
@@ -8,13 +18,15 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 				
 				reg [7:0] x_original;
 				reg [6:0] y_original;
+				reg [5:0] q;
 				reg normal1crouch0;
+				
 				always @(posedge clk, negedge reset_n)
 				 begin
 					if(!reset_n) 
 						begin
-							x_original <= 8'd30;
-							y_original <= 7'd108;
+							x_original <= 8'd25;
+							y_original <= 7'd25;
 						end
 					else 
 						begin
@@ -35,6 +47,7 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 					if(!reset_n)
 						begin
 							erase_finish <= 0;
+							draw_man_finish <= 0;
 							q <= 0;
 						end
 
@@ -45,7 +58,6 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 								begin
 									draw_man_finish <= 1;
 									erase_finish <= 0;
-									draw_floors_finish <= 0;
 								end
 							else if(erase)
 								begin
@@ -73,7 +85,7 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 									if(ground_y >= 7'd35 && ground_y <= 7'd38 || ground_y >= 7'd75 && ground_y <= 7'd78 || ground_y >= 7'd115 && ground_y <= 7'd118)
 										begin ground_y <= ground_y + 1; end 
 									else if (ground_y == 7'd39 || ground_y == 7'd79)
-										begin ground_y <= ground_y + 40; end
+										begin ground_y <= ground_y + 36; end
 									else if (ground_y == 7'd119)
 										begin draw_floors_finish <= 1; end
 								end
@@ -275,8 +287,6 @@ module datapath(input clk,	reset_n, drawing_floors, draw_man, erase, x_in, y_in,
 								end
 						end
 				end
-				
-				reg [5:0] q;
 
 						
 endmodule

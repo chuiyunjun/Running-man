@@ -46,14 +46,14 @@ module lab7part3
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
-	//wire [2:0] move; // movement determined by user inputs
+	wire [2:0] move; // movement determined by user inputs
 
-	//input_decoder INPUT(
-	//	.clk(CLOCK_50),
-	//	.reset(resetn),
-	//	.inputkeys(~KEY[3:1]),
-	//	.movement(move)
-	//);
+	input_decoder INPUT(
+		.clk(CLOCK_50),
+		.reset(resetn),
+		.inputkeys(~KEY[3:1]),
+		.movement(move)
+	);
 
 	vga_adapter VGA(
 			.resetn(resetn),
@@ -88,10 +88,8 @@ module lab7part3
 			ld_man_style,
 			reset_frame_counter,
 			normal1crouch0,
-			x_in,
-			y_in,
 			update;
-			
+		wire [6:0] y_in;	
 			
 		fsm fsm0(.clk(CLOCK_50),
 					.reset_n(resetn),
@@ -99,6 +97,7 @@ module lab7part3
 					.erase_finish(erase_finish),
 					.frameCounter(frameCounter),
 					.drawing_floors(drawing_floors),
+					.draw_man_finish(draw_man_finish),
 					.erase(erase),
 					.ld_x(ld_x),
 					.ld_y(ld_y),
@@ -114,8 +113,8 @@ module lab7part3
 					.drawing_floors(drawing_floors),
 					.draw_man(draw_man),
 					.erase(erase),
-					.x_in(8'd40),
-					.y_in(7'd108),
+					.x_in(8'd25),
+					.y_in(y_in),
 
 					.draw_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
@@ -129,13 +128,15 @@ module lab7part3
 					.man_style(1'b1)
 					);
 					
-      wire newClock, frameCounter;
+      wire newClock;
+		wire [3:0] frameCounter;
 		delay_counter dc0(.reset_n(resetn), .clock(CLOCK_50), .new_clock(newClock));
-		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .counter(frameCounter));
+		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .resetn(resetn), .counter(frameCounter));
 		
 		
-		//movement m0(.clk(CLOCK_50), .operation(3'b000), .reset(resetn), .update(update), .yout(y_in));
+		movement m0(.clk(CLOCK_50), .operation(move), .reset(resetn), .update(update), .yout(y_in));
 endmodule
+
 
 
 module delay_counter(clock, reset_n, new_clock);
@@ -164,11 +165,11 @@ endmodule
 
 
 module frame_counter(
-	input clock, reset_n,
+	input clock, reset_n, resetn,
 	output reg [3:0] counter);
 	
-	always @(posedge clock, negedge reset_n) begin
-		if(reset_n == 1'b0)
+	always @(posedge clock, negedge reset_n, negedge resetn) begin
+		if(reset_n == 1'b0 || resetn == 1'b0)
 			counter <= 1'b0;
 		else
 			counter <= counter + 1'b1;

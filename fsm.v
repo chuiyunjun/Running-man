@@ -1,6 +1,6 @@
 module fsm(
 	input clk, reset_n,
-	input draw_floors_finish, erase_finish, drawing_man_finish,
+	input draw_floors_finish, erase_finish, draw_man_finish,
 	input [3:0] frameCounter,
 
 	output  reg drawing_floors,
@@ -31,8 +31,8 @@ module fsm(
 		case(current_state)
 			S_DRAWING_FLOORS: next_state = draw_floors_finish? S_LOAD_MAN: S_DRAWING_FLOORS ;
 			S_LOAD_MAN: next_state = S_DRAWING_MAN;
-			S_DRAWING_MAN: next_state = drawing_man_finish? S_WAIT : S_DRAWING_MAN;
-			S_WAIT: next_state = (frameCounter == 4'b1110) ? S_ERASE : S_RESET_FRAME_COUNTER;
+			S_DRAWING_MAN: next_state = draw_man_finish? S_WAIT : S_DRAWING_MAN;
+			S_WAIT: next_state = (frameCounter == 4'b1110) ? S_RESET_FRAME_COUNTER : S_WAIT;
 			S_RESET_FRAME_COUNTER: next_state = S_ERASE;
 			S_ERASE: next_state = (erase_finish)? S_UPDATE_MAN_X_Y : S_ERASE;
 			S_UPDATE_MAN_X_Y: next_state = S_LOAD_MAN;
