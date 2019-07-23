@@ -65,7 +65,7 @@ module datapath(input clk,
 									draw_man_finish <= 0;
 								end
 						end
-					else
+					else if (draw_man == 1'b1 && draw_man_finish == 1'b0|| erase == 1'b1 && erase_finish == 1'b0)
 						begin
 							q <= q + 1;
 						end
@@ -95,6 +95,13 @@ module datapath(input clk,
 								end
 						end
 				end
+				
+				
+				always @(*)
+				begin
+					if(reset)
+					
+				end
 
 				always @(*)
 				begin
@@ -102,12 +109,12 @@ module datapath(input clk,
 							begin
 								x = ground_x;
 								y = ground_y;
-								color = 3'b101;
+								color = 3'b101;//////////////////////////////color
 							end
 
 					 else if(draw_man || erase)
 						begin
-							color = draw_man ? 3'b111:3'b000;
+							color = draw_man ? 3'b111:3'b000;///////////////////////color
 						
 							if(normal1crouch0)
 							begin
