@@ -84,6 +84,10 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
                          begin
                              next_state = DROP0;
                          end
+                      else
+                         begin
+                             next_state = WAIT;
+                         end
                   end
             BIG_JUMP0: next_state = (update) ? BIG_JUMP1 : BIG_JUMP0;
 			BIG_JUMP1: next_state = (update) ? BIG_JUMP2 : BIG_JUMP1;
