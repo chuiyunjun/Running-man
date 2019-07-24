@@ -1,6 +1,6 @@
 
 
-module lab7part3
+module RnningMan
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here
@@ -46,14 +46,8 @@ module lab7part3
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
-	wire [2:0] move; // movement determined by user inputs
-
-	input_decoder INPUT(
-		.clk(CLOCK_50),
-		.reset(resetn),
-		.inputkeys(~KEY[3:1]),
-		.movement(move)
-	);
+	
+	
 
 	vga_adapter VGA(
 			.resetn(resetn),
@@ -88,8 +82,7 @@ module lab7part3
 			ld_man_style,
 			reset_frame_counter,
 			normal1crouch0,
-			update;
-		wire [6:0] y_in;	
+			update; 
 			
 		fsm fsm0(.clk(CLOCK_50),
 					.reset_n(resetn),
@@ -114,8 +107,7 @@ module lab7part3
 					.draw_man(draw_man),
 					.erase(erase),
 					.x_in(8'd25),
-					.y_in(y_in),
-
+					.y_in(y_w),
 					.draw_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
 					.erase_finish(erase_finish),
@@ -125,16 +117,27 @@ module lab7part3
 					.ld_x(ld_x),
 					.ld_y(ld_y),
 					.ld_man_style(ld_man_style),
-					.man_style(1'b1)
+					.man_style(SW[9])
 					);
-					
+
       wire newClock;
 		wire [3:0] frameCounter;
 		delay_counter dc0(.reset_n(resetn), .clock(CLOCK_50), .new_clock(newClock));
 		frame_counter fc0(.clock(newClock), .reset_n(reset_frame_counter), .resetn(resetn), .counter(frameCounter));
-		
-		
+
+		/*
 		movement m0(.clk(CLOCK_50), .operation(move), .reset(resetn), .update(update), .yout(y_in));
+		wire [2:0] move; 
+
+	   input_decoder INPUT(
+		.clk(CLOCK_50),
+		.reset(resetn),
+		.inputkeys(~KEY[3:1]),
+		.movement(move)
+	);
+	*/
+		wire [6:0] y_w;
+	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys(KEY[3:1]), .y(y_w));
 endmodule
 
 
