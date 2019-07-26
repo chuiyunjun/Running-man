@@ -1,6 +1,6 @@
 module fsm(
 	input clk, reset_n,
-	input draw_floors_finish, erase_finish, draw_man_finish,
+	input draw_floors_finish, erase_finish, draw_man_finish, draw_tree_finish,
 	input [3:0] frameCounter,
 
 	output  reg drawing_floors,
@@ -10,16 +10,18 @@ module fsm(
 	output reg ld_man_style,
 	output reg update,
 	output reg draw_man,
+	output reg draw_tree,
 	output reg reset_frame_counter,
 	output reg writeEn);
 	
 	localparam  S_DRAWING_FLOORS = 5'd0,
 					S_LOAD_MAN= 5'd1,
 				   S_DRAWING_MAN = 5'd2,
-					S_WAIT = 5'd3,
-					S_RESET_FRAME_COUNTER = 5'd4,
-					S_ERASE = 5'd5,
-					S_UPDATE_MAN_X_Y = 5'd6;
+				   S_DRAWING_TREE = 5'd3,
+					S_WAIT = 5'd4,
+					S_RESET_FRAME_COUNTER = 5'd5,
+					S_ERASE = 5'd6,
+					S_UPDATE_MAN_X_Y = 5'd7;
 	
 	
 	
@@ -30,8 +32,9 @@ module fsm(
 	begin: state_table
 		case(current_state)
 			S_DRAWING_FLOORS: next_state = draw_floors_finish? S_LOAD_MAN: S_DRAWING_FLOORS ;
-			S_LOAD_MAN: next_state = S_DRAWING_MAN;
-			S_DRAWING_MAN: next_state = draw_man_finish? S_WAIT : S_DRAWING_MAN;
+			S_LOAD_MAN: next_state = S_DRAWING_TREE;
+			S_DRAWING_TREE: next_state = draw_tree_finish? S_DRAWING_MAN : S_DRAWING_TREE;
+			S_DRAWING_MAN : next_state = draw_man_finish ? S_WAIT : S_DRAWING_MAN ;
 			S_WAIT: next_state = (frameCounter == 4'b1110) ? S_RESET_FRAME_COUNTER : S_WAIT;
 			S_RESET_FRAME_COUNTER: next_state = S_ERASE;
 			S_ERASE: next_state = (erase_finish)? S_UPDATE_MAN_X_Y : S_ERASE;
@@ -52,7 +55,8 @@ module fsm(
 		reset_frame_counter = 1;
 		erase = 0;
 		update = 0;
-		
+		draw_tree = 0;
+
 		case(current_state)
 			S_DRAWING_FLOORS: begin drawing_floors = 1'b1; writeEn = 1'b1; end
 			S_LOAD_MAN: 
@@ -65,6 +69,11 @@ module fsm(
 				begin
 					writeEn = 1;
 					draw_man = 1;
+				end
+			S_DRAWING_TREE:
+				begin
+					writeEn = 1;
+					draw_tree = 1;
 				end
 			S_RESET_FRAME_COUNTER: 
 				begin

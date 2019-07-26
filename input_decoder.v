@@ -107,3 +107,4 @@ module timer(clk, reset, enable, bigorsmall);
             end
     end
 endmodule
+

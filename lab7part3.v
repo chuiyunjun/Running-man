@@ -73,6 +73,9 @@ module RnningMan
 	// Put your code here. Your code should produce signals x,y,colour and writeEn/plot
 	// for the VGA controller, in addition to any other functionality your design may require.
     wire drawing_floors_finish,
+			draw_tree,
+			draw_man_finish,
+			draw_tree_finish,
 			erase_finish,
 			drawing_floors,
 			draw_man,
@@ -80,6 +83,7 @@ module RnningMan
 			ld_x,
 			ld_y,
 			ld_man_style,
+			ld_shape,
 			reset_frame_counter,
 			normal1crouch0,
 			update; 
@@ -91,6 +95,7 @@ module RnningMan
 					.frameCounter(frameCounter),
 					.drawing_floors(drawing_floors),
 					.draw_man_finish(draw_man_finish),
+					.draw_tree_finish(draw_tree_finish),
 					.erase(erase),
 					.ld_x(ld_x),
 					.ld_y(ld_y),
@@ -98,6 +103,7 @@ module RnningMan
 					.reset_frame_counter(reset_frame_counter),
 					.update(update),
 					.draw_man(draw_man),
+					.draw_tree(draw_tree),
 					.writeEn(writeEn)
 					);
 					
@@ -105,18 +111,25 @@ module RnningMan
 					.reset_n(resetn),
 					.drawing_floors(drawing_floors),
 					.draw_man(draw_man),
+					.draw_tree(draw_tree),
 					.erase(erase),
-					.x_in(8'd25),
+					.x_in(x_w),
 					.y_in(y_w),
+					.update(update),
 					.draw_floors_finish(drawing_floors_finish),
 					.draw_man_finish(draw_man_finish),
 					.erase_finish(erase_finish),
+					.draw_tree_finish(draw_tree_finish),
+					.top(top_shape),
+					.mid(mid_shape),
+					.bottom(bottom_shape),
 					.color(colour),
 					.x(x),
 					.y(y),
 					.ld_x(ld_x),
 					.ld_y(ld_y),
 					.ld_man_style(ld_man_style),
+					.ld_shape(ld_shape),
 					.man_style(SW[9])
 					);
 
@@ -137,7 +150,14 @@ module RnningMan
 	);
 	*/
 		wire [6:0] y_w;
+		wire [7:0] x_w;
 	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys(KEY[3:1]), .y(y_w));
+
+	   wire [1:0] top_shape, mid_shape, bottom_shape;
+	   wire [11:0] count;
+	   rand r0(.clk(CLOCK_50), .reset_n(resetn), .count(count));
+	   shape s0(.reset_n(resetn), .update(update), .count(count), .top_shape(top_shape), .mid_shape(mid_shape), .bottom_shape(bottom_shape));
+	   x_counter xc0(.speed(SW[8:7]), .resetn(resetn), .update(update), .x(x_w), .ld_shape(ld_shape));
 endmodule
 
 
@@ -170,7 +190,7 @@ endmodule
 module frame_counter(
 	input clock, reset_n, resetn,
 	output reg [3:0] counter);
-	
+
 	always @(posedge clock, negedge reset_n, negedge resetn) begin
 		if(reset_n == 1'b0 || resetn == 1'b0)
 			counter <= 1'b0;

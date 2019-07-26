@@ -68,7 +68,7 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
 				DROP7         = 6'd33,
 				DROP8         = 6'd34;
 
-	always @(posedge update, posedge operation)
+	always @(posedge update, posedge (|operation))
     begin: state_table
         case (current_state)
              WAIT: begin
@@ -127,7 +127,7 @@ module yvalueupdater(clk, operation, reset, update, yin, yout);
         endcase
     end
 
-    always @(posedge update, posedge operation, negedge reset)
+    always @(posedge update, posedge (|operation), negedge reset)
     begin: enable_signals
 		yout = 7'd108;
         case (current_state)
@@ -201,4 +201,7 @@ module yregister(yin, update, clk, reset, yout);
             end
     end
 endmodule
+
+
+
 

@@ -97,12 +97,13 @@ module y_counter(input resetn,
                                                 speed_bj <= 4'd9;
                                             end
 
-                                        move_over <= ((!bj_up1down0) && speed_bj == 4'd2)? 1 : 0;
+														move_over <= ((!bj_up1down0) && speed_bj == 4'd2)? 1 : 0;
 
                                         if(bj_up1down0 && speed_bj == 4'd3 || (!bj_up1down0) && speed_bj == 4'd2)
                                             begin
                                                 bj_up1down0 <= !bj_up1down0;
                                             end
+													
                                     
                                     end
                                 else if(move == 2'b10)
@@ -128,8 +129,20 @@ module y_counter(input resetn,
                                 else if(move == 2'b11)
                                     begin
                                         y <= y + speed_drop;
-                                        speed_drop <= (speed_drop == 4'd4)? (speed_drop + 2'd2) : (speed_drop + 1'b1); 
-                                        move_over <= (speed_drop == 4'd9) ? 1 : 0;
+                                        if(speed_drop == 4'd4)
+														begin
+															speed_drop <= 4'd6;
+														end
+													else if(speed_drop == 4'd9)
+														begin
+															speed_drop <= 4'd1;
+															move_over <= 1;
+														end
+													else
+														begin
+															speed_drop <= speed_drop + 4'd1;
+														end
+													
                                     end
                                 else if(move == 2'b00)
                                     begin
@@ -164,7 +177,6 @@ module yBox(input [2:0] keys,
                        .y(y),
                        .move_over(move_over) 
                        );
-
 endmodule
 
 
