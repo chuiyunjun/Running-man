@@ -16,6 +16,8 @@ module debouncer(input clk,
                 input resetn,
                 input [2:0] keys,
                 input move_over,
+					 input [6:0] y,
+					 input man_style,
                 output reg [1:0] move);
 
                 reg move_wait;
@@ -30,21 +32,23 @@ module debouncer(input clk,
                         begin
                             if(move_wait)
                                 begin
-                                    if(!keys[0])
-                                        begin
-                                            move <= 2'b01;
-                                            move_wait <= 0;
-                                        end
-                                    else if(!keys[1])
-                                        begin
-                                            move <= 2'b10;
-                                            move_wait <= 0;
-                                        end
-                                    else if(!keys[2])
-                                        begin
-                                            move <= 2'b11;
-                                            move_wait <= 0;
-                                        end
+												if(man_style) begin
+														if(!keys[0] && y > 7'd40)
+															 begin
+																  move <= 2'b01;
+																  move_wait <= 0;
+															 end
+														else if(!keys[1])
+															 begin
+																  move <= 2'b10;
+																  move_wait <= 0;
+															 end
+														else if(!keys[2] && y < 7'd80)
+															 begin
+																  move <= 2'b11;
+																  move_wait <= 0;
+															 end
+													end
                                 end
                             else if(move_over)
                                 begin
@@ -159,6 +163,7 @@ module yBox(input [2:0] keys,
             input update,
             input clk,
             input resetn,
+				input man_style,
             output [6:0] y);
 
         wire [1:0] move; 
@@ -168,6 +173,8 @@ module yBox(input [2:0] keys,
                     .resetn(resetn),
                     .keys(keys),
                     .move_over(move_over),
+						  .y(y),
+						  .man_style(man_style),
                     .move(move)
                     );
 

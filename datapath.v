@@ -19,13 +19,14 @@ module datapath(input clk,
 						output reg draw_tree_finish,
 						output reg [2:0] color,
 						output reg [7:0] x,
-						output reg [6:0] y);
+						output reg [6:0] y,
+						output reg [1:0] top_shape, mid_shape, bottom_shape);
 				
 				reg [7:0] x_original;
 				reg [6:0] y_original;
 				reg [5:0] q;
 				reg normal1crouch0;
-				reg [1:0] top_shape, mid_shape, bottom_shape;
+				//reg [1:0] top_shape, mid_shape, bottom_shape;
 				
 				always @(posedge clk, negedge reset_n)
 				 begin

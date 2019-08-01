@@ -4,6 +4,7 @@ module RnningMan
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here
+			LEDR,
         KEY,
         SW,
 		// The ports below are for the VGA output.  Do not change.
@@ -20,6 +21,7 @@ module RnningMan
 	input			CLOCK_50;				//	50 MHz
 	input   [9:0]   SW;
 	input   [3:0]   KEY;
+	output  [9:0] LEDR;
 
 	// Declare your inputs and outputs here
 	// Do not change the following outputs
@@ -130,9 +132,12 @@ module RnningMan
 					.ld_y(ld_y),
 					.ld_man_style(ld_man_style),
 					.ld_shape(ld_shape),
-					.man_style(SW[9])
+					.man_style(SW[9]),
+					.top_shape(top_shape_f),
+					.mid_shape(mid_shape_f),
+					.bottom_shape(bottom_shape_f)
 					);
-
+		wire [1:0] top_shape_f, mid_shape_f,bottom_shape_f;
       wire newClock;
 		wire [3:0] frameCounter;
 		delay_counter dc0(.reset_n(resetn), .clock(CLOCK_50), .new_clock(newClock));
@@ -149,15 +154,21 @@ module RnningMan
 		.movement(move)
 	);
 	*/
+		
 		wire [6:0] y_w;
 		wire [7:0] x_w;
-	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys(KEY[3:1]), .y(y_w));
+	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys(KEY[3:1]), .y(y_w), .man_style(SW[9]));
 
 	   wire [1:0] top_shape, mid_shape, bottom_shape;
 	   wire [11:0] count;
 	   rand r0(.clk(CLOCK_50), .reset_n(resetn), .count(count));
 	   shape s0(.reset_n(resetn), .update(update), .count(count), .top_shape(top_shape), .mid_shape(mid_shape), .bottom_shape(bottom_shape));
 	   x_counter xc0(.speed(SW[8:7]), .resetn(resetn), .update(update), .x(x_w), .ld_shape(ld_shape));
+		
+		wire collision;
+		assign LEDR[0] = collision;
+
+		collision_detector c0(y_w, x_w, !SW[9], top_shape_f, mid_shape_f, bottom_shape_f, collision);
 endmodule
 
 
