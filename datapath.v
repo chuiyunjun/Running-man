@@ -42,7 +42,7 @@ module datapath(input clk,
                     else if (g_y == 7'd119) begin
                         g_x <= 8'd0;
                         g_y <= 7'd0;
-                        draw_gameover_finish <= 1'b0;
+                        draw_gameover_finish <= 1'b1;
                     end
                 end
                         
