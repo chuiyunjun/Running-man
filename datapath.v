@@ -12,21 +12,45 @@ module datapath(input clk,
 					input man_style,
 					input draw_tree,
 					input [1:0] top, mid, bottom,
+                    input gameover,
 					input update,
 						output reg draw_floors_finish,
 						output reg draw_man_finish,
 						output reg erase_finish,
 						output reg draw_tree_finish,
+                        output reg draw_gameover_finish,
 						output reg [2:0] color,
 						output reg [7:0] x,
 						output reg [6:0] y,
-						output reg [1:0] top_shape, mid_shape, bottom_shape);
+                        output reg top_shape, mid_shape, bottom_shape);
 				
+                reg [7:0] g_x;
+                reg [6:0] g_y;
+                always @(posedge clk, negedge reset_n) begin
+                    if (reset_n == 1'b0) begin
+                        g_x <= 8'd0;
+                        g_y <= 7'd0;
+                        draw_gameover_finish <= 1'b0;
+                    end
+                    else if (gameover & g_x < 8'd159) begin
+                        g_x <= g_x + 1;
+                    end
+                    else if (g_x == 8'd159) begin
+                        g_x <= 8'd0;
+                        g_y <= g_y + 1;
+                    end
+                    else if (g_y == 7'd119) begin
+                        g_x <= 8'd0;
+                        g_y <= 7'd0;
+                        draw_gameover_finish <= 1'b0;
+                    end
+                end
+                        
 				reg [7:0] x_original;
 				reg [6:0] y_original;
 				reg [5:0] q;
 				reg normal1crouch0;
-				//reg [1:0] top_shape, mid_shape, bottom_shape;
+				// reg [1:0] top_shape, mid_shape, bottom_shape;
 				
 				always @(posedge clk, negedge reset_n)
 				 begin
@@ -173,6 +197,17 @@ module datapath(input clk,
 				begin
 					if(!reset_n || drawing_floors) begin color = 3'b101; end
 					else if (draw_man) begin color = 3'b111; end
+                    else if (gameover) begin
+                        color = 3'b000;
+                        color = ((58 <= g_x & g_x < 78) || (82 <= g_x & g_x < 102)) ? 3'b100 : 3'b000;
+                        color = (70 >= g_y || g_y < 45) ? 3'b000 : color;
+                        color = (63 <= g_x & g_x < 73 & 60 <= y & y < 65) ? 3'b000 : color;
+                        color = (63 <= g_x & g_x < 68 & 55 <= y & y < 60) ? 3'b000 : color;
+                        color = (63 <= g_x & g_x < 78 & 50 <= y & y < 55) ? 3'b000 : color;
+                        color = (87 <= g_x & g_x < 97 & 60 <= y & y < 65) ? 3'b000 : color;
+                        color = (87 <= g_x & g_x < 92 & 55 <= y & y < 60) ? 3'b000 : color;
+                        color = (87 <= g_x & g_x < 102 & 50 <= y & y < 55) ? 3'b000 : color;
+                    end
 					else if (erase) 
 						begin 
 							if(y>= 7'd35 && y<= 7'd39 || y>= 7'd75 && y<= 7'd79 || y>= 7'd115 && y<= 7'd119)
@@ -244,6 +279,11 @@ module datapath(input clk,
 							x = erase_x;
 							y = erase_y;
 						end
+                    else if(gameover)
+                        begin
+                            x = g_x;
+                            y = g_y;
+                        end
 					else if(draw_man )
 						begin
 
