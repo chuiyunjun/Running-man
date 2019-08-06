@@ -22,7 +22,7 @@ module datapath(input clk,
 						output reg [2:0] color,
 						output reg [7:0] x,
 						output reg [6:0] y,
-                        output reg top_shape, mid_shape, bottom_shape);
+                        output reg [1:0] top_shape, mid_shape, bottom_shape);
 				
                 reg [7:0] g_x;
                 reg [6:0] g_y;
