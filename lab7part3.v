@@ -111,7 +111,8 @@ module RnningMan
 					.update(update),
 					.draw_man(draw_man),
 					.draw_tree(draw_tree),
-					.writeEn(writeEn)
+					.writeEn(writeEn),
+                    .gameover(game_over)
 					);
 					
 		datapath d0(.clk(CLOCK_50),
@@ -130,6 +131,7 @@ module RnningMan
                     .draw_gameover_finish(gameover_finished),
 					.top(top_shape),
 					.mid(mid_shape),
+                    .gameover(game_over),
 					.bottom(bottom_shape),
 					.color(colour),
 					.x(x),
@@ -144,6 +146,7 @@ module RnningMan
                     .bottom_shape(bottom_shape_f)
 					);
         wire gameover_finished;
+        wire game_over;
         wire [1:0] top_shape_f, mid_shape_f, bottom_shape_f;
       wire newClock;
 		wire [3:0] frameCounter;
