@@ -109,7 +109,7 @@ module decimalreg(clk, reset, out, pulse);
     input clk;
     input reset;
     output reg [3:0] out;
-    output pulse;
+    output reg pulse;
     always @(posedge clk) begin
         if (reset == 1'b0) begin
             out = 4'b0;
