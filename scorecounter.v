@@ -1,6 +1,7 @@
-module scorecounter(clk, reset, hex0, hex1, hex2, hex3, hex4, hex5);
+module scorecounter(clk, reset, gameover, hex0, hex1, hex2, hex3, hex4, hex5);
     input clk;
     input reset;
+    input gameover;
     output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
     wire pulse;
     wire [3:0] val0, val1, val2, val3, val4, val5;
@@ -8,6 +9,7 @@ module scorecounter(clk, reset, hex0, hex1, hex2, hex3, hex4, hex5);
     ratedivider r0(
         .clk(clk),
         .reset(reset),
+        .gameover(gameover),
         .signal(pulse)
     );
     
@@ -84,23 +86,29 @@ module scorecounter(clk, reset, hex0, hex1, hex2, hex3, hex4, hex5);
     );
 endmodule
 
-module ratedivider(clk, reset, signal);
+module ratedivider(clk, reset, gameover, signal);
     input clk;
     input reset;
+    input gameover;
     output reg signal;
-    reg [24:0] counter;
-    always @(posedge clk) begin
+    reg [25:0] counter;
+    reg go;
+    always @(posedge clk, negedge reset, posedge gameover) begin
+        if (gameover) begin
+            go <= 1'b0;
+        end
         if (reset == 1'b0) begin
-            counter = 25'b0;
-            signal = 1'b0;
+            counter <= 26'b0;
+            signal <= 1'b0;
+            go <= 1'b1;
         end
-        else if (counter < 25'd49999999) begin
-            counter = counter + 1;
-            signal = 1'b0;
+        else if (go & counter < 26'd49999999) begin
+            counter <= counter + 1;
+            signal <= 1'b0;
         end
-        else if (counter = 25'd49999999) begin
-            counter = 24'b0;
-            signal = 1'b1;
+        else if (go & counter == 26'd49999999) begin
+            counter <= 26'b0;
+            signal <= 1'b1;
         end
     end 
 endmodule
@@ -110,18 +118,18 @@ module decimalreg(clk, reset, out, pulse);
     input reset;
     output reg [3:0] out;
     output reg pulse;
-    always @(posedge clk) begin
+    always @(posedge clk, negedge reset) begin
         if (reset == 1'b0) begin
-            out = 4'b0;
-            pulse = 1'b0;
+            out <= 4'b0;
+            pulse <= 1'b0;
         end
         else if (out < 4'd9) begin
-            out = out + 1;
-            pulse = 1'b0;
+            out <= out + 1;
+            pulse <= 1'b0;
         end
         else if (out == 4'd9) begin
-            out = 4'b0;
-            pulse = 1'b1;
+            out <= 4'b0;
+            pulse <= 1'b1;
         end
     end
 endmodule
