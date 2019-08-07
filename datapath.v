@@ -200,7 +200,7 @@ module datapath(input clk,
                     else if (gameover) begin
                         color = 3'b000;
                         color = ((58 <= g_x & g_x < 78) || (82 <= g_x & g_x < 102)) ? 3'b100 : 3'b000;
-                        color = (70 <= g_y || g_y < 45) ? color : 3'b000;
+                        color = (70 <= g_y || g_y < 45) ? 3'b000 : color;
                         color = (63 <= g_x & g_x < 73 & 60 <= y & y < 65) ? 3'b000 : color;
                         color = (63 <= g_x & g_x < 68 & 55 <= y & y < 60) ? 3'b000 : color;
                         color = (63 <= g_x & g_x < 78 & 50 <= y & y < 55) ? 3'b000 : color;

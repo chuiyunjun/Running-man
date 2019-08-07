@@ -6,6 +6,7 @@ module RnningMan
 		// Your inputs and outputs here
         KEY,
         SW,
+		  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5,
 		// The ports below are for the VGA output.  Do not change.
 		VGA_CLK,   						//	VGA Clock
 		VGA_HS,							//	VGA H_SYNC
@@ -20,6 +21,7 @@ module RnningMan
 	input			CLOCK_50;				//	50 MHz
 	input   [9:0]   SW;
 	input   [3:0]   KEY;
+	output  [6:0]   HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
 
 	// Declare your inputs and outputs here
 	// Do not change the following outputs
@@ -84,6 +86,7 @@ module RnningMan
 			ld_y,
 			ld_man_style,
 			ld_shape,
+			gameover,
 			reset_frame_counter,
 			normal1crouch0,
 			update; 
@@ -96,6 +99,7 @@ module RnningMan
                     .top_shape_f(top_shape_f),
                     .mid_shape_f(mid_shape_f),
                     .bottom_shape_f(bottom_shape_f),
+						   .gameover(gameover),
                     .y_w(y_w),
                     .x_w(x_w),
                     .crouch(!SW[9]),
@@ -111,14 +115,16 @@ module RnningMan
 					.update(update),
 					.draw_man(draw_man),
 					.draw_tree(draw_tree),
-					.writeEn(writeEn),
-                    .gameover(game_over)
+					.writeEn(writeEn)
 					);
 					
+					
+
 		datapath d0(.clk(CLOCK_50),
 					.reset_n(resetn),
 					.drawing_floors(drawing_floors),
 					.draw_man(draw_man),
+					.gameover(gameover),
 					.draw_tree(draw_tree),
 					.erase(erase),
 					.x_in(x_w),
@@ -131,7 +137,6 @@ module RnningMan
                     .draw_gameover_finish(gameover_finished),
 					.top(top_shape),
 					.mid(mid_shape),
-                    .gameover(game_over),
 					.bottom(bottom_shape),
 					.color(colour),
 					.x(x),
@@ -146,7 +151,6 @@ module RnningMan
                     .bottom_shape(bottom_shape_f)
 					);
         wire gameover_finished;
-        wire game_over;
         wire [1:0] top_shape_f, mid_shape_f, bottom_shape_f;
       wire newClock;
 		wire [3:0] frameCounter;
@@ -173,6 +177,10 @@ module RnningMan
 	   rand r0(.clk(CLOCK_50), .reset_n(resetn), .count(count));
 	   shape s0(.reset_n(resetn), .update(update), .count(count), .top_shape(top_shape), .mid_shape(mid_shape), .bottom_shape(bottom_shape));
 	   x_counter xc0(.speed(SW[8:7]), .resetn(resetn), .update(update), .x(x_w), .ld_shape(ld_shape));
+		
+		scorecounter s1(CLOCK_50, resetn, gameover, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
+		
+		
 endmodule
 
 

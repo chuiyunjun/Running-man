@@ -97,19 +97,21 @@ module ratedivider(clk, reset, gameover, signal);
         if (gameover) begin
             go <= 1'b0;
         end
-        else if (reset == 1'b0) begin
-            counter <= 26'b0;
-            signal <= 1'b0;
-            go <= 1'b1;
-        end
-        else if (go & counter < 26'd49999999) begin
-            counter <= counter + 1;
-            signal <= 1'b0;
-        end
-        else if (go & counter == 26'd49999999) begin
-            counter <= 26'b0;
-            signal <= 1'b1;
-        end
+		  else begin
+							  if (reset == 1'b0) begin
+									counter <= 26'b0;
+									signal <= 1'b0;
+									go <= 1'b1;
+							  end
+							  else if (go & (counter < 26'd49999999)) begin
+									counter <= counter + 1;
+									signal <= 1'b0;
+							  end
+							  else if (go & (counter == 26'd49999999)) begin
+									counter <= 26'b0;
+									signal <= 1'b1;
+							  end
+			end
     end 
 endmodule
 
