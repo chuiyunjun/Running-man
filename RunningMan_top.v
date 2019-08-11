@@ -4,7 +4,7 @@ module RnningMan
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here
-        KEY,
+		KEY,
         SW,
 		  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5,
 		// The ports below are for the VGA output.  Do not change.
@@ -15,8 +15,24 @@ module RnningMan
 		VGA_SYNC_N,						//	VGA SYNC
 		VGA_R,   						//	VGA Red[9:0]
 		VGA_G,	 						//	VGA Green[9:0]
-		VGA_B   						//	VGA Blue[9:0]
+		VGA_B,  						//	VGA Blue[9:0]
+		PS2_DAT,PS2_CLK,GPIO_0, GPIO_1
 	);
+	
+	input    PS2_DAT;
+   input    PS2_CLK;
+   //  GPIO Connections
+   inout  [35:0]  GPIO_0, GPIO_1;
+	assign  GPIO_0    =  36'hzzzzzzzzz;
+	assign  GPIO_1    =  36'hzzzzzzzzz;
+	wire [4:0] keys;
+	ps2test pt0(.clk(CLOCK_50),
+					.resetn(resetn),
+					.PS2_DAT(PS2_DAT),
+					.PS2_CLK(PS2_CLK),
+					.GPIO_0(GPIO_0), 
+					.GPIO_1(GPIO_1),
+					.BoardKey(keys));
 
 	input			CLOCK_50;				//	50 MHz
 	input   [9:0]   SW;
@@ -102,7 +118,7 @@ module RnningMan
 					.gameover(gameover),
 				  .y_w(y_w),
 				  .x_w(x_w),
-				  .crouch(!SW[9]),
+				  .crouch(keys[2]),
 				  .draw_gameover_finish(gameover_finished),
 					.drawing_floors(drawing_floors),
 					.draw_man_finish(draw_man_finish),
@@ -145,7 +161,7 @@ module RnningMan
 					.ld_y(ld_y),
 					.ld_man_style(ld_man_style),
 					.ld_shape(ld_shape),
-					.man_style(SW[9]),
+					.man_style(!keys[2]),
 				  .top_shape(top_shape_f),
 				  .mid_shape(mid_shape_f),
 				  .bottom_shape(bottom_shape_f)
@@ -170,7 +186,7 @@ module RnningMan
 	*/
 		wire [6:0] y_w;
 		wire [7:0] x_w;
-	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys(KEY[3:1]), .y(y_w), .man_style(SW[9]));
+	   yBox ybox0(.clk(CLOCK_50), .resetn(resetn), .update(update), .keys({!keys[1], !keys[0], !keys[3]}), .y(y_w), .man_style(!keys[2]));
 
 	   wire [1:0] top_shape, mid_shape, bottom_shape;
 	   wire [11:0] count;

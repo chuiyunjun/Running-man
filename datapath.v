@@ -26,6 +26,20 @@ module datapath(input clk,
 				
                 reg [7:0] g_x;
                 reg [6:0] g_y;
+				reg [7:0] x_original;
+				reg [6:0] y_original;
+				reg [5:0] q;
+				reg normal1crouch0;
+				reg [7:0] tree_x;
+				reg [6:0] tree_y;	
+				reg [7:0] ground_x;
+				reg [6:0] ground_y;
+				reg [7:0] erase_x;
+				reg [6:0] erase_y;	
+				reg [7:0] tree_x_r;
+				localparam COLOR_FLOOR = 3'b010;
+
+
                 always @(posedge clk, negedge reset_n) begin
                     if (reset_n == 1'b0) begin
                         g_x <= 8'd0;
@@ -46,10 +60,6 @@ module datapath(input clk,
                     end
                 end
                         
-				reg [7:0] x_original;
-				reg [6:0] y_original;
-				reg [5:0] q;
-				reg normal1crouch0;
 				// reg [1:0] top_shape, mid_shape, bottom_shape;
 				
 				always @(posedge clk, negedge reset_n)
@@ -80,13 +90,6 @@ module datapath(input clk,
 					end
 				end
 
-				reg [7:0] tree_x;
-				reg [6:0] tree_y;	
-				reg [7:0] ground_x;
-				reg [6:0] ground_y;
-				reg [7:0] erase_x;
-				reg [6:0] erase_y;	
-				reg [7:0] tree_x_r;
 				always @(posedge clk)
 				begin
 					if(!reset_n)
@@ -113,6 +116,7 @@ module datapath(input clk,
 
 					if(!reset_n)
 						begin
+							tree_x <= tree_x_r;
 							tree_y <= 7'd0;
 							draw_tree_finish <= 0;
 						end
@@ -195,7 +199,7 @@ module datapath(input clk,
 				
 				always @(*)
 				begin
-					if(!reset_n || drawing_floors) begin color = 3'b101; end
+					if(!reset_n || drawing_floors) begin color = COLOR_FLOOR; end
 					else if (draw_man) begin color = 3'b111; end
                     else if (gameover) begin
                         color = 3'b000;
@@ -212,7 +216,7 @@ module datapath(input clk,
 						begin 
 							if(y>= 7'd35 && y<= 7'd39 || y>= 7'd75 && y<= 7'd79 || y>= 7'd115 && y<= 7'd119)
 								begin
-									color = 3'b101;
+									color = COLOR_FLOOR;
 								end
 							else
 								begin
@@ -223,7 +227,7 @@ module datapath(input clk,
 						begin
 							if(y>= 7'd35 && y<= 7'd39 || y>= 7'd75 && y<= 7'd79 || y>= 7'd115 && y<= 7'd119)
 								begin
-									color = 3'b101;
+									color = COLOR_FLOOR;
 								end
 							else if (y>= 7'd15 && y<= 7'd29 || y>= 7'd55 && y<= 7'd69 || y>= 7'd95 && y<= 7'd109)
 								begin
