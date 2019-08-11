@@ -1,14 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///   move 00            nothing to do, just wait for commands.                                            ///
 ///        01            jump to the level above, +9 ,8,7,6,5,4,3 then -2                                  ///
-///        10            jump,  +7,6,5,4,3,2,1 then -1,2,3,4,5,6,7                                       ///
+///        10            jump,  +7,6,5,4,3,2,1 then -1,2,3,4,5,6,7                                         ///
 ///        11            drop to the level below, -1,2,3,4,6,7,8,9                                         ///
 ///                                                                                                        ///
 ///                                                                                                        ///
-///                                                                                                        ///
-///                                                                                                        ///
-///      TODO://   have not considered the case of dropping from the lowest level and jumping              ///
-///                 from the top level.                                                                    ///    
+///                                                                                                        ///  
 ///                                                                                                        ///
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,11 +52,11 @@ module decoder(input clk,
 														end
 												
                                 end
-										else
+									else
 											begin
 												move <= 2'b00;
 											end
-                        end
+                       end
 
                 end
         end
@@ -201,41 +198,41 @@ module yCounter(input [1:0] move,
 
             always @(negedge resetn, posedge update)
             begin
-                        if(!resetn)
-                            begin
-                                y <= 7'd108;
-                            end
-                        else
-                            begin
-                                if(move == 2'b01)
-                                    begin
-                                        if(bj_up1down0)
-                                            begin
-                                                y <= y - speed_bj; 
-                                            end
-                                        else
-                                            begin
-                                                y <= y + speed_bj; 
-                                            end	          
-                                    end
-                                else if(move == 2'b10)
-                                    begin
-                                        if(sj_up1down0)
-                                            begin
-                                                y <= y - speed_sj; 
-                                            end
-                                        else
-                                            begin
-                                                y <= y + speed_sj; 
-                                            end
-                                    end
-                                else if(move == 2'b11)
-                                    begin
-                                        y <= y + speed_drop;
-                                    end
-                            end
-            end
-						
+					if(!resetn)
+						 begin
+							  y <= 7'd108;
+						 end
+					else
+						 begin
+							  if(move == 2'b01)
+									begin
+										 if(bj_up1down0)
+											  begin
+													y <= y - speed_bj; 
+											  end
+										 else
+											  begin
+													y <= y + speed_bj; 
+											  end	          
+									end
+							  else if(move == 2'b10)
+									begin
+										 if(sj_up1down0)
+											  begin
+													y <= y - speed_sj; 
+											  end
+										 else
+											  begin
+													y <= y + speed_sj; 
+											  end
+									end
+							  else if(move == 2'b11)
+									begin
+										 y <= y + speed_drop;
+									end
+					end
+				end
+					
 						
 endmodule
 

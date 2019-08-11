@@ -10,7 +10,7 @@ module ps2test(
   //output  [6:0]  HEX0, HEX1,// HEX2, HEX3, HEX4, HEX5, HEX6, HEX7,
   //  LEDs
   //output  [8:0]  LEDG,  //  LED Green[8:0]
-  output reg [3:0]  BoardKey,  //  LED Red[17:0]
+  output reg [4:0]  BoardKey,  //  LED Red[17:0]
   //  PS2 data and clock lines        
   input    PS2_DAT,
   input    PS2_CLK,
@@ -112,7 +112,7 @@ always @(negedge scan_ready, posedge reset)
 begin
 	if(reset)
 		begin
-				BoardKey[3:0] <= 4'b0000;
+				BoardKey[4:0] <= 5'b00000;
 		end
 	else
 		begin
@@ -128,6 +128,25 @@ begin
 
 			if ((~BoardKey[0] && history[1] == 8'h1D) || (history[2] == 8'hF0 && history[1] == 8'h1D))
 				begin BoardKey[0] <= ~BoardKey[0]; end // W
+			if ((~BoardKey[4] && history[1] == 8'h2D) || (history[2] == 8'hF0 && history[1] == 8'h2D))
+				begin BoardKey[4] <= ~BoardKey[4]; end // R
+				
+				
+			/*
+				
+			if ((~BoardKey[5] && history[1] == 8'h16) || (history[2] == 8'hF0 && history[1] == 8'h16))
+				begin BoardKey[5] <= ~BoardKey[5]; end // 1 
+
+			if ((~BoardKey[6] && history[1] == 8'h1E) || (history[2] == 8'hF0 && history[1] == 8'h1E))
+				begin BoardKey[6] <= ~BoardKey[6]; end // 2
+				
+			if ((~BoardKey[7] && history[1] == 8'h26) || (history[2] == 8'hF0 && history[1] == 8'h26))
+				begin BoardKey[7] <= ~BoardKey[7]; end // 3
+
+			if ((~BoardKey[8] && history[1] == 8'h25) || (history[2] == 8'hF0 && history[1] == 8'h25))
+				begin BoardKey[8] <= ~BoardKey[8]; end // 4
+			*/	
+			
 		end
 end		
 

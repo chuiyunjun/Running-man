@@ -2,7 +2,13 @@ module fsm(
 	input clk, reset_n,
 	input draw_floors_finish, erase_finish, draw_man_finish, draw_tree_finish,
 	input [3:0] frameCounter,
-
+    input [1:0] top_shape_f,
+    input [1:0] mid_shape_f,
+    input [1:0] bottom_shape_f,
+    input [6:0] y_w,
+    input [7:0] x_w,
+    input crouch,
+    input draw_gameover_finish,
 	output  reg drawing_floors,
 	output reg erase,
 	output reg ld_x,
@@ -12,7 +18,8 @@ module fsm(
 	output reg draw_man,
 	output reg draw_tree,
 	output reg reset_frame_counter,
-	output reg writeEn);
+	output reg writeEn,
+    output reg gameover);
 	
 	localparam  S_DRAWING_FLOORS = 5'd0,
 					S_LOAD_MAN= 5'd1,
@@ -21,11 +28,23 @@ module fsm(
 					S_WAIT = 5'd4,
 					S_RESET_FRAME_COUNTER = 5'd5,
 					S_ERASE = 5'd6,
-					S_UPDATE_MAN_X_Y = 5'd7;
+					S_UPDATE_MAN_X_Y = 5'd7,
+                    S_GAMEOVER = 5'd8,
+                    S_GAMEOVER_WAIT = 5'd9;
 	
 	
 	
 	reg [3:0] current_state, next_state;
+    wire collision;
+    collision_detector c0(
+        .curr_y(y_w),
+        .curr_x(x_w),
+        .crouch(crouch),
+        .lane1(top_shape_f),
+        .lane2(mid_shape_f),
+        .lane3(bottom_shape_f),
+        .collision(collision)
+    );
 
 	always @(*)
 	//state table
@@ -38,7 +57,9 @@ module fsm(
 			S_WAIT: next_state = (frameCounter == 4'b1110) ? S_RESET_FRAME_COUNTER : S_WAIT;
 			S_RESET_FRAME_COUNTER: next_state = S_ERASE;
 			S_ERASE: next_state = (erase_finish)? S_UPDATE_MAN_X_Y : S_ERASE;
-			S_UPDATE_MAN_X_Y: next_state = S_LOAD_MAN;
+			S_UPDATE_MAN_X_Y: next_state = (collision) ? S_GAMEOVER : S_LOAD_MAN; 
+            S_GAMEOVER: next_state = (draw_gameover_finish) ? S_GAMEOVER_WAIT : S_GAMEOVER;
+            S_GAMEOVER_WAIT: next_state = S_GAMEOVER_WAIT;
 			default next_state = S_DRAWING_FLOORS;
 		endcase
 	end
@@ -56,7 +77,7 @@ module fsm(
 		erase = 0;
 		update = 0;
 		draw_tree = 0;
-
+        gameover = 0;
 		case(current_state)
 			S_DRAWING_FLOORS: begin drawing_floors = 1'b1; writeEn = 1'b1; end
 			S_LOAD_MAN: 
@@ -88,6 +109,11 @@ module fsm(
 				begin
 					update = 1;
 				end
+            S_GAMEOVER:
+                begin
+                    gameover = 1;
+                    writeEn = 1;
+                end
 		endcase
 	end
 
