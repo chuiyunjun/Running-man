@@ -30,12 +30,16 @@ Running Man is written in verilog and tested with a DE1-SOC board
 
 ## 3. Features
 - Inputs for gaming are mainly from the PS2 KEYBOARD
-- W key will allow the user to do a small jump to avoid short obstacles
-- C key will allow the user to duck under certain obstacles
-- S key will allow the user to go to a platform below
-- SPACE key will allow the user to jump to the above platform
+    - W key will allow the user to do a small jump to avoid short obstacles
+    - C key will allow the user to duck under certain obstacles
+    - S key will allow the user to go to a platform below
+    - SPACE key will allow the user to jump to the above platform
+- Inputs from DE1-SOC board 
+    - KEY[0] reset
+    - SW[8:7] adjust the speed of obstacles' moving
+        - 2'b00 ~ 2'b11 reoresents the speed from slow to fast
 - Obstacles will be randomly generated through a LFSR
-- Score will be calculated per second alive
+- Score will be calculated per second alive, shown on the HEX of DE1-SOC
 
 ## 4. Requirements
 - DE1-SOC board (tested) and a PS2 Keyboard
