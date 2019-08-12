@@ -3,7 +3,7 @@
 CSC258 project Running Man
 =============================
 
-Running Man is a game that consists of 3 platforms which the user will be able to switch between while avoiding obstacles using a PS2 keyboard
+Running Man is a game that consists of 3 platforms which the user will be able to switch between while avoiding obstacles using a PS2 keyboard.
 
 Top Level Module: **RunningMan_top.v**
 
