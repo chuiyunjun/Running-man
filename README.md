@@ -35,8 +35,8 @@ Running Man is written in verilog and tested with a DE1-SOC board
     - S key will allow the user to go to a platform below
     - SPACE key will allow the user to jump to the above platform
 - Inputs from DE1-SOC board 
-    - KEY[0] represents reset
-    - SW[8:7] allows to adjust the speed of obstacles' moving
+    - KEY[0] will allow to reset
+    - SW[8:7] will allow to adjust the speed of obstacles' moving
         - 2'b00 ~ 2'b11 represents the speed from slow to fast
 - Obstacles will be randomly generated through a LFSR
 - Score will be calculated per second alive, shown on the HEX of DE1-SOC
