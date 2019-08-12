@@ -30,6 +30,7 @@ module x_counter(input [1:0] speed,
 		assign ld_shape = (x <= 8'd4) ? 1:0;
 endmodule
 
+
 module rand(input clk,
 			input reset_n,
 			output reg [11:0] count);
@@ -46,7 +47,6 @@ module rand(input clk,
 						end
 				end
 endmodule
-
 
 
 module shape(input [11:0] count,
@@ -71,4 +71,3 @@ module shape(input [11:0] count,
 					end
 			end
 endmodule
-
