@@ -11,25 +11,23 @@ Top Level Module: **RunningMan_top.v**
 Running Man is written in verilog and tested with a DE1-SOC board
 
 ## 1. Modules We Created
-- datapath.v:
-- delay_counter.v:
-- frame_counter.v:
-- fsm.v:
-- randomshapes.v:
-- scorecounter.v:
-- xCounter.v:
-- yBox.v:
+- datapath.v: Output unit to pass values into the VGA_ADAPTER 
+- delay_counter.v: Used to change the 50MHZ clk to the 60HZ required for the monitor
+- frame_counter.v: Counts the frames to be passed into FSM for processing
+- fsm.v: Control unit to understand the inputs passed in from other modules
+- randomshapes.v: Generates the random obstacles the User will face
+- scorecounter.v: Counts the score 1 point per second until the player loses
+- xCounter.v: Counts the position of the obstacles coming towards to the user
+- yBox.v: Calculates the players Y position after input movements 
 
 ## 2. Resources Used
-- [vga adapter](http://www.eecg.utoronto.ca/~jayar/ece241_08F/vga/)
+- [vga adapter](http://www.eecg.utoronto.ca/~jayar/ece241_08F/vga/): Was used to render the images displayed on the monitor
   - vga_adapter.v
   - vga_address_translator.v
   - vga_controller.v
   - vga_pll.v
-  - Was used to render the images displayed on the monitor
-- [ps2test.v](https://johnloomis.org/digitallab/ps2lab1/ps2lab1.html#top):
-  - Top level module in ps2test was modified to work with our code
-  - Used to connect a PS2 keyboard to work with the DE1-SOC board
+- [ps2 keyboard](https://johnloomis.org/digitallab/ps2lab1/ps2lab1.html#top): Used to connect a PS2 keyboard to work with the DE1-SOC board
+  - ps2test.v: Top level module in ps2test was modified to work with our code
 
 ## 3. Features
 - Inputs for gaming are mainly from the PS2 KEYBOARD
