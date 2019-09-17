@@ -26,7 +26,20 @@ module datapath(input clk,
 				
                 reg [7:0] g_x;
                 reg [6:0] g_y;
-					 localparam COLOR_FLOOR = 3'b010;
+				reg [7:0] x_original;
+				reg [6:0] y_original;
+				reg [5:0] q;
+				reg normal1crouch0;
+				reg [7:0] tree_x;
+				reg [6:0] tree_y;	
+				reg [7:0] ground_x;
+				reg [6:0] ground_y;
+				reg [7:0] erase_x;
+				reg [6:0] erase_y;	
+				reg [7:0] tree_x_r;
+				localparam COLOR_FLOOR = 3'b010;
+
+
                 always @(posedge clk, negedge reset_n) begin
                     if (reset_n == 1'b0) begin
                         g_x <= 8'd0;
@@ -47,10 +60,6 @@ module datapath(input clk,
                     end
                 end
                         
-				reg [7:0] x_original;
-				reg [6:0] y_original;
-				reg [5:0] q;
-				reg normal1crouch0;
 				// reg [1:0] top_shape, mid_shape, bottom_shape;
 				
 				always @(posedge clk, negedge reset_n)
@@ -81,13 +90,6 @@ module datapath(input clk,
 					end
 				end
 
-				reg [7:0] tree_x;
-				reg [6:0] tree_y;	
-				reg [7:0] ground_x;
-				reg [6:0] ground_y;
-				reg [7:0] erase_x;
-				reg [6:0] erase_y;	
-				reg [7:0] tree_x_r;
 				always @(posedge clk)
 				begin
 					if(!reset_n)
@@ -114,6 +116,7 @@ module datapath(input clk,
 
 					if(!reset_n)
 						begin
+							tree_x <= tree_x_r;
 							tree_y <= 7'd0;
 							draw_tree_finish <= 0;
 						end
